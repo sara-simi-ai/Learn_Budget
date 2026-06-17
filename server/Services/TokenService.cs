@@ -17,8 +17,8 @@ namespace server.Services
             _logger = logger;
         }
 
-        public string GenerateToken(string userId, string email, string fullName)
-        {
+            public string GenerateToken(string userId, string email, string fullName, UserRole role)
+            {
             var jwtSettings = _configuration.GetSection("JwtSettings");
             var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey is not configured");
             var issuer = jwtSettings["Issuer"];
@@ -33,6 +33,7 @@ namespace server.Services
             new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, email),
             new Claim(JwtRegisteredClaimNames.GivenName, fullName),
+            new Claim(ClaimTypes.Role, role.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(ClaimTypes.NameIdentifier, userId.ToString())
         };

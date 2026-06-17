@@ -4,11 +4,10 @@ namespace server.Interfaces
 {
     public interface IEmployeeService
     {
-         Task<IEnumerable<EmployeeResponseDto>> GetAllEmployeesAsync();
-        Task<EmployeeResponseDto?> GetEmployeeByIdAsync(int id);
-        Task<EmployeeResponseDto> CreateEmployeeAsync(CreateEmployeeDto dto);
-        Task<EmployeeResponseDto?> UpdateEmployeeAsync(int id, UpdateEmployeeDto dto);
-        Task<bool> DeleteEmployeeAsync(int id);
+         Task<IEnumerable<EmployeeResponseDto>> GetEmployeesListAsync();
+        Task<EmployeeResponseDto?> GetEmployeeByIdAsync(string id);
+        Task<EmployeeResponseDto?> UpdateEmployee(string id, EmployeeUpdateDto updateDto);
+        Task<bool> DeleteEmployeeAsync(string id);
         Task<EmployeeResponseDto?> AddCreditsAsync(int employeeId, int creditsToAdd);
     }
 }

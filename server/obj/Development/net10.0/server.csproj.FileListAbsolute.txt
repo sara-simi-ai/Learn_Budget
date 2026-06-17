@@ -1,0 +1,9 @@
+C:\Users\rivka\3D Objects\LearnBudget\server\obj\Development\net10.0\server.csproj.AssemblyReference.cache
+C:\Users\rivka\3D Objects\LearnBudget\server\obj\Development\net10.0\rpswa.dswa.cache.json
+C:\Users\rivka\3D Objects\LearnBudget\server\obj\Development\net10.0\server.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rivka\3D Objects\LearnBudget\server\obj\Development\net10.0\server.AssemblyInfoInputs.cache
+C:\Users\rivka\3D Objects\LearnBudget\server\obj\Development\net10.0\server.AssemblyInfo.cs
+C:\Users\rivka\3D Objects\LearnBudget\server\obj\Development\net10.0\server.csproj.CoreCompileInputs.cache
+C:\Users\rivka\3D Objects\LearnBudget\server\obj\Development\net10.0\server.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\rivka\3D Objects\LearnBudget\server\obj\Development\net10.0\server.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\rivka\3D Objects\LearnBudget\server\obj\Development\net10.0\server.sourcelink.json

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace server.Models
 {
     public class User
@@ -10,7 +9,7 @@ namespace server.Models
         public string Email { get; set; } = null!;
         public string? Password { get; set; }
         public string Phone { get; set; } = string.Empty;
-        public bool IsAdmin { get; set; } = false;
-         public Employee? Employee { get; set; }
+        public UserRole Role { get; set; } = UserRole.Employee;
+        public Employee? Employee { get; set; }
     }
 }

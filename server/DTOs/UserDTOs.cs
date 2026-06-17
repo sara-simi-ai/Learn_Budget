@@ -11,7 +11,7 @@ namespace server.DTOs
             public string LastName { get; set; } = string.Empty;
             public string Email { get; set; } = string.Empty;
             public string Phone { get; set; } = string.Empty;
-            public bool IsAdmin { get; set; }
+            public UserRole Role { get; set; }
         }
 
         public class UserCreateDto

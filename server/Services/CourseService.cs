@@ -46,6 +46,7 @@ namespace server.Services
                     Location = dto.CourseDetail.Location,
                     LecturerId = dto.CourseDetail.LecturerId,
                     MeetingLink = dto.CourseDetail.MeetingLink,
+                    StartDate = dto.CourseDetail.StartDate,
                 } : null
             };
 
@@ -78,6 +79,7 @@ namespace server.Services
                 existingCourse.CourseDetail.Location = updCourse.CourseDetail.Location;
                 existingCourse.CourseDetail.LecturerId = updCourse.CourseDetail.LecturerId;
                 existingCourse.CourseDetail.MeetingLink = updCourse.CourseDetail.MeetingLink;
+                existingCourse.CourseDetail.StartDate = updCourse.CourseDetail.StartDate;
             }
 
             var updatedCourse = await _courseRepository.UpdateCourseAsync(existingCourse);
@@ -115,6 +117,7 @@ namespace server.Services
                     Location = course.CourseDetail.Location,
                     LecturerName = fullLecturerName,
                     MeetingLink = course.CourseDetail.MeetingLink,
+                    StartDate = course.CourseDetail.StartDate,
                 } : null
             };
         }

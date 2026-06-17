@@ -8,9 +8,10 @@ namespace server.DTOs
             public int EmployeeId { get; set; }
             public string EmployeeName { get; set; } = string.Empty;
             public int CourseId { get; set; }
-            public string CourseTitle { get; set; } = string.Empty;
+            public string CourseName { get; set; } = string.Empty;
             public DateTime RegistrationDate { get; set; }
-            public int CreditsRemaining { get; set; }
+            public int AvailableCredits { get; set; }
+            public int Status { get; set; }
         }
     
         public class CourseReportEntryDto

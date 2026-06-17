@@ -11,7 +11,7 @@ namespace server.Models
 
         public int CourseId { get; set; }
         public Course Course { get; set; } = null!;
-
         public DateTime RegistrationDate { get; set; }
+        public CourseRegistrationStatus Status { get; set; } = CourseRegistrationStatus.Active;
     }
 }

@@ -8,12 +8,14 @@ namespace server.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IEmployeeRepository _employeeRepository;
         private readonly ITokenService _tokenService;
         private readonly IConfiguration _configuration;
 
-        public UserService(IUserRepository userRepository, ITokenService tokenService, IConfiguration configuration)
+        public UserService(IUserRepository userRepository, IEmployeeRepository employeeRepository, ITokenService tokenService, IConfiguration configuration)
         { 
             _userRepository = userRepository;
+            _employeeRepository = employeeRepository;
             _tokenService = tokenService;
             _configuration = configuration;
         }
@@ -48,8 +50,7 @@ namespace server.Services
                 return null;
             }
 
-            var token = _tokenService.GenerateToken(user.Id, user.Email, $"{user.FirstName} {user.LastName}");
-            var expiryMinutes = _configuration.GetValue<int>("JwtSettings:ExpiryMinutes", 70);
+            var token = _tokenService.GenerateToken(user.Id, user.Email, $"{user.FirstName} {user.LastName}", user.Role);            var expiryMinutes = _configuration.GetValue<int>("JwtSettings:ExpiryMinutes", 70);
 
             //_logger.LogInformation("User {UserId} authenticated successfully", user.Id);
 
@@ -64,24 +65,35 @@ namespace server.Services
 
         public async Task<UserResponseDto?> CreateUser(UserCreateDto user)
         {
-            var usersList = await _userRepository.GetUsersList();
-            foreach (var u in usersList)
-            {
-                if (u.Id == user.Id)
-                    return null;
-            }
+            var existingUser = await _userRepository.GetUserById(user.Id);
+            
+            if (existingUser != null) 
+                return null;
+
             var newUser = new User
             {
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                IsAdmin = false,
+                Role = UserRole.Employee,
                 Phone = user.Phone,
                 Password = HashPassword(user.Password),
             };
             var createdUser = await _userRepository.CreateUser(newUser);
+
+            var newEmployee = new Employee
+            {
+                User = createdUser,
+                Department = "כללי",
+                TotalCredits = 20, 
+                UsedCredits = 0
+            };
+            
+            await _employeeRepository.CreateEmployeeAsync(newEmployee);
+
             return MapToResponseDto(createdUser);
+
         }
 
         public async Task<UserResponseDto?> UpdateUser(string id, UserUpdateDto updateUser)
@@ -112,7 +124,7 @@ namespace server.Services
                 LastName = user.LastName,
                 Email = user.Email,
                 Phone = user.Phone,
-                IsAdmin = user.IsAdmin
+                Role = user.Role
             };
         }
 

@@ -13,6 +13,7 @@ namespace server.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<CourseDetail> CourseDetails { get; set; }
         public DbSet<CourseRegistration> CourseRegistrations { get; set; }
+        public DbSet<Lecturer> Lecturers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,7 +27,7 @@ namespace server.Data
                 entity.Property(e => e.Email).IsRequired();
                 entity.Property(e => e.Phone).IsRequired().HasMaxLength(10);
                 entity.Property(e=> e.Password).IsRequired();
-                entity.Property(e => e.IsAdmin).IsRequired();
+                entity.Property(e => e.Role).IsRequired();
             });
 
             modelBuilder.Entity<Employee>(entity =>
@@ -83,6 +84,16 @@ namespace server.Data
                       .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasIndex(cr => new { cr.EmployeeId, cr.CourseId }).IsUnique();
+            });
+
+            modelBuilder.Entity<Lecturer>(entity =>
+            {
+                entity.HasKey(l => l.Id);
+                entity.Property(l => l.FullName).IsRequired().HasMaxLength(200);
+                entity.Property(l => l.Email).IsRequired();
+                entity.Property(l => l.Phone).IsRequired().HasMaxLength(20);
+                entity.Property(l => l.CompanyName).IsRequired().HasMaxLength(200);
+                entity.Property(l => l.Cost).IsRequired();
             });
         }
     }

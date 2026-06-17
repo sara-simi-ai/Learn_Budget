@@ -12,5 +12,6 @@ namespace server.Interfaces
         Task<bool> DeleteUser(string id);
         Task<LoginResponseDto?> Authenticate(string id, string password);
 
+
     }
 }
