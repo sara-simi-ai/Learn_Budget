@@ -98,13 +98,13 @@ namespace server.Controllers
         }
 
         [HttpDelete("{registrationId}/cancel")]
-        public async Task<ActionResult> CancelRegistration(int registrationId, [FromQuery] int employeeId)
+        public async Task<ActionResult> CancelRegistration(int registrationId)
         {
             try
             {
-                var result = await _registrationService.CancelRegistrationAsync(registrationId, employeeId);
+                var result = await _registrationService.CancelRegistrationAsync(registrationId);
                 if (!result)
-                    return NotFound(new { message = $"Registration with ID {registrationId} not found for employee {employeeId}." });
+                    return NotFound(new { message = $"Registration with ID {registrationId} not found." });
 
                 return Ok(new { message = "Registration cancelled successfully." });
             }

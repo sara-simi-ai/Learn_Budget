@@ -28,11 +28,11 @@ namespace server.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Employee?> GetEmployeeByIdAsync(string userId)
+        public async Task<Employee?> GetEmployeeByIdAsync(int userId)
         {
             return await _context.Employees
                 .Include(e => e.User)
-                .FirstOrDefaultAsync(e => e.User.Id == userId);
+                .FirstOrDefaultAsync(e => e.Id == userId);
         }
 
         public async Task<Employee?> UpdateEmployeeAsync(Employee employee)
@@ -42,10 +42,10 @@ namespace server.Repositories
             return employee;
         }
 
-        public async Task<bool> DeleteEmployeeAsync(string userId)
+        public async Task<bool> DeleteEmployeeAsync(int userId)
         {
             var employee = await _context.Employees
-                .FirstOrDefaultAsync(e => e.User.Id == userId);
+                .FirstOrDefaultAsync(e => e.Id == userId);
                 
             if (employee == null) return false;
 

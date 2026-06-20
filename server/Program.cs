@@ -1,64 +1,46 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Serilog;
 using server.Data;
 using server.Interfaces;
+using server.Middleware;
 using server.Repositories;
 using server.Services;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
+// Log.Logger = new LoggerConfiguration()
+//     .ReadFrom.Configuration(new ConfigurationBuilder()
+//         .AddJsonFile("appsettings.json")
+//         .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+//         .Build())
+//     .Enrich.FromLogContext()
+//     .WriteTo.Console()
+//     .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+//     .CreateLogger();
 
-// ==================== SERVICES CONFIGURATION ====================
-
-// Add authentication with JWT
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["SecretKey"];
-
-if (string.IsNullOrEmpty(secretKey))
+try
 {
-    throw new InvalidOperationException("JWT SecretKey is not configured. Please set it in environment variables or appsettings.");
-}
+    //Log.Information("Starting Store API application");
+    Console.WriteLine("=== האפליקציה התחילה לרוץ בהצלחה! ===");
+    var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-        ValidateIssuer = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidateAudience = true,
-        ValidAudience = jwtSettings["Audience"],
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
-    };
-});
+   
+    builder.Host.UseSerilog();
 
-// Add CORS
-var corsOrigins = builder.Configuration.GetValue<string>("Cors:AllowedOrigins")?.Split(',') ?? new[] { "*" };
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowedOrigins", policy =>
-    {
-        policy.WithOrigins(corsOrigins)
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
-    });
-});
+   
+       builder.Services.AddCors(options =>
+   {
+       options.AddPolicy("AllowAllOrigins",
+           builder => builder.AllowAnyOrigin()
+                             .AllowAnyMethod()
+                             .AllowAnyHeader());
+   });
+
 
 // Add database context
-builder.Services.AddDbContext<LearnBudgetContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("LearnBudgetConnection"),
-        sqlOptions => sqlOptions.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelaySeconds: 5))
-);
+// Add database context (removed - declared again below with retry logic)
 
 // Add repository services
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
@@ -73,74 +55,120 @@ builder.Services.AddScoped<ILecturerRepository, LecturerRepository>();
 builder.Services.AddScoped<ILecturerService, LecturerService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
-// Add controllers and API features
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(options =>
     {
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Description = "Please enter token",
-        Name = "Authorization",
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "bearer"
-    });
-    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "Enter your JWT token in the format: Bearer {token}"
+        });
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            new OpenApiSecurityScheme
             {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                Reference = new OpenApiReference
                 {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
                 }
             },
-            new string[] { }
+            new string[] {}
         }
     });
-});
+    });
 
-// Add health checks
-builder.Services.AddHealthChecks()
-    .AddDbContextCheck<LearnBudgetContext>();
+    builder.Services.AddDbContext<LearnBudgetContext>(options =>
+            options.UseSqlServer(
+                builder.Configuration.GetConnectionString("LearnBudgetConnection")));
 
-// ==================== BUILD APP ====================
+    var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+    var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey is not configured");
 
-var app = builder.Build();
+    builder.Services.AddAuthentication(options =>
+    {
+        
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+            ClockSkew = TimeSpan.Zero
+        };
 
-// ==================== MIDDLEWARE CONFIGURATION ====================
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Log.Warning("JWT Authentication failed: {Error}", context.Exception.Message);
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                var userId = context.Principal?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                Log.Debug("JWT token validated for user {UserId}", userId);
+                return Task.CompletedTask;
+            }
+        };
+    });
 
-// Use CORS before authentication
-app.UseCors("AllowedOrigins");
+    builder.Services.AddAuthorization();
 
-// Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
+    builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        });
+
+    var app = builder.Build();
+
+    app.UseRequestLogging();
+
+    app.UseRateLimiting();
+
+
+    if (app.Environment.IsDevelopment())
+    {
+    }
+
+    //app.UseHttpsRedirection();
+
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+     app.UseSwagger();
     app.UseSwaggerUI();
+
+    Log.Information("Store API is now running");
+
+    app.UseCors("AllowAllOrigins");
+
+
+    app.Run();
 }
-else
+catch (Exception ex)
 {
-    // Use HSTS in production
-    app.UseHsts();
+    Console.WriteLine($"FATAL ERROR: {ex}");
+    Environment.Exit(1);
 }
-
-// Redirect HTTP to HTTPS
-app.UseHttpsRedirection();
-
-// Authentication and Authorization
-app.UseAuthentication();
-app.UseAuthorization();
-
-// Health check endpoint
-app.MapHealthChecks("/health");
-
-// Map controllers
-app.MapControllers();
-
-// ==================== RUN ====================
-
-app.Run();
+finally
+{
+    //Log.CloseAndFlush();
+}

@@ -19,13 +19,13 @@ namespace server.Services
             return employees.Select(MapToEmployeeResponseDto);
         }
 
-        public async Task<EmployeeResponseDto?> GetEmployeeByIdAsync(string id)
+        public async Task<EmployeeResponseDto?> GetEmployeeByIdAsync(int id)
         {
             var employee = await _employeeRepository.GetEmployeeByIdAsync(id);
             return employee != null ? MapToEmployeeResponseDto(employee) : null;
         }
 
-        public async Task<EmployeeResponseDto?> UpdateEmployee(string id, EmployeeUpdateDto updateDto)
+        public async Task<EmployeeResponseDto?> UpdateEmployee(int id, EmployeeUpdateDto updateDto)
         {
             var employee = await _employeeRepository.GetEmployeeByIdAsync(id);
             if (employee == null) return null;
@@ -47,7 +47,7 @@ namespace server.Services
             return updated != null ? MapToEmployeeResponseDto(updated) : null;
         }
 
-        public async Task<bool> DeleteEmployeeAsync(string id)
+        public async Task<bool> DeleteEmployeeAsync(int id)
         {
             return await _employeeRepository.DeleteEmployeeAsync(id);
         }

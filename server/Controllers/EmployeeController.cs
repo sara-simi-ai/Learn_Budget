@@ -25,7 +25,7 @@ namespace server.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<EmployeeResponseDto>> GetEmployeeById(string id)
+        public async Task<ActionResult<EmployeeResponseDto>> GetEmployeeById(int id)
         {
             var employee = await _employeeService.GetEmployeeByIdAsync(id);
             if (employee == null)
@@ -34,7 +34,7 @@ namespace server.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<EmployeeResponseDto>> UpdateEmployee(string id, [FromBody] EmployeeUpdateDto employeeUpdateDto)
+        public async Task<ActionResult<EmployeeResponseDto>> UpdateEmployee(int id, [FromBody] EmployeeUpdateDto employeeUpdateDto)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace server.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteEmployee(string id)
+        public async Task<ActionResult> DeleteEmployee(int id)
         {
             var employee = await _employeeService.DeleteEmployeeAsync(id);
             if (!employee)
