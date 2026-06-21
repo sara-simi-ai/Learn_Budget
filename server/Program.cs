@@ -10,19 +10,16 @@ using server.Repositories;
 using server.Services;
 using System.Text;
 
-// Log.Logger = new LoggerConfiguration()
-//     .ReadFrom.Configuration(new ConfigurationBuilder()
-//         .AddJsonFile("appsettings.json")
-//         .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
-//         .Build())
-//     .Enrich.FromLogContext()
-//     .WriteTo.Console()
-//     .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
-//     .CreateLogger();
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 try
 {
-    //Log.Information("Starting Store API application");
+    Log.Information("Starting LearnBudget API application");
     Console.WriteLine("=== האפליקציה התחילה לרוץ בהצלחה! ===");
     var builder = WebApplication.CreateBuilder(args);
 
@@ -156,13 +153,14 @@ builder.Services.AddScoped<ITokenService, TokenService>();
      app.UseSwagger();
     app.UseSwaggerUI();
 
-    Log.Information("Store API is now running");
+    Log.Information("LearnBudget API is now running");
 
     app.UseCors("AllowAllOrigins");
 
 
     app.Run();
 }
+
 catch (Exception ex)
 {
     Console.WriteLine($"FATAL ERROR: {ex}");
@@ -170,5 +168,5 @@ catch (Exception ex)
 }
 finally
 {
-    //Log.CloseAndFlush();
+    Log.CloseAndFlush();
 }

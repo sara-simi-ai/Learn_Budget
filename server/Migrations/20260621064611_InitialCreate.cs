@@ -30,15 +30,32 @@ namespace server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Lecturers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    CompanyName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Cost = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Lecturers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FullName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    IsAdmin = table.Column<bool>(type: "bit", nullable: false)
+                    Role = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,7 +69,9 @@ namespace server.Migrations
                     CourseId = table.Column<int>(type: "int", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     LecturerName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    MeetingLink = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    MeetingLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LecturerId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -63,6 +82,11 @@ namespace server.Migrations
                         principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CourseDetails_Lecturers_LecturerId",
+                        column: x => x.LecturerId,
+                        principalTable: "Lecturers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -71,7 +95,8 @@ namespace server.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Department = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     TotalCredits = table.Column<int>(type: "int", nullable: false),
                     UsedCredits = table.Column<int>(type: "int", nullable: false),
                     CourseId = table.Column<int>(type: "int", nullable: true)
@@ -84,6 +109,12 @@ namespace server.Migrations
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Employees_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -94,7 +125,8 @@ namespace server.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeId = table.Column<int>(type: "int", nullable: false),
                     CourseId = table.Column<int>(type: "int", nullable: false),
-                    RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -114,6 +146,11 @@ namespace server.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CourseDetails_LecturerId",
+                table: "CourseDetails",
+                column: "LecturerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CourseRegistrations_CourseId",
                 table: "CourseRegistrations",
                 column: "CourseId");
@@ -128,6 +165,12 @@ namespace server.Migrations
                 name: "IX_Employees_CourseId",
                 table: "Employees",
                 column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employees_UserId",
+                table: "Employees",
+                column: "UserId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -140,13 +183,16 @@ namespace server.Migrations
                 name: "CourseRegistrations");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Lecturers");
 
             migrationBuilder.DropTable(
                 name: "Employees");
 
             migrationBuilder.DropTable(
                 name: "Courses");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

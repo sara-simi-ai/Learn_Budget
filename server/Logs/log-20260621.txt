@@ -1,0 +1,26 @@
+2026-06-21 10:13:14.857 +03:00 [INF] Starting Store API application
+2026-06-21 10:13:15.308 +03:00 [DBG] Registered model binder providers, in the following order: ["Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BinderTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ServicesModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.HeaderModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FloatingPointTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.EnumTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.DateTimeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.SimpleTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.TryParseModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.CancellationTokenModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ByteArrayModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FormFileModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FormCollectionModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.KeyValuePairModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.DictionaryModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ArrayModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.CollectionModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexObjectModelBinderProvider"]
+2026-06-21 10:13:15.519 +03:00 [INF] Store API is now running
+2026-06-21 10:13:15.539 +03:00 [DBG] Hosting starting
+2026-06-21 10:13:15.602 +03:00 [INF] User profile is available. Using 'C:\Users\rivka\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-21 10:13:15.619 +03:00 [DBG] Reading data from file 'C:\Users\rivka\AppData\Local\ASP.NET\DataProtection-Keys\key-bb7a52e4-5373-41a8-abc0-b40b57f7e4ca.xml'.
+2026-06-21 10:13:15.641 +03:00 [DBG] Found key {bb7a52e4-5373-41a8-abc0-b40b57f7e4ca}.
+2026-06-21 10:13:15.693 +03:00 [DBG] Considering key {bb7a52e4-5373-41a8-abc0-b40b57f7e4ca} with expiration date 2026-09-16 17:08:47Z as default key.
+2026-06-21 10:13:15.723 +03:00 [DBG] Forwarded activator type request from Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor, Microsoft.AspNetCore.DataProtection, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60 to Microsoft.AspNetCore.DataProtection.XmlEncryption.DpapiXmlDecryptor, Microsoft.AspNetCore.DataProtection, Culture=neutral, PublicKeyToken=adb9793829ddae60
+2026-06-21 10:13:15.732 +03:00 [DBG] Decrypting secret element using Windows DPAPI.
+2026-06-21 10:13:15.847 +03:00 [DBG] Forwarded activator type request from Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60 to Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Culture=neutral, PublicKeyToken=adb9793829ddae60
+2026-06-21 10:13:16.006 +03:00 [DBG] Opening CNG algorithm 'AES' from provider 'null' with chaining mode CBC.
+2026-06-21 10:13:16.308 +03:00 [DBG] Opening CNG algorithm 'SHA256' from provider 'null' with HMAC.
+2026-06-21 10:13:16.431 +03:00 [DBG] Using key {bb7a52e4-5373-41a8-abc0-b40b57f7e4ca} as the default key.
+2026-06-21 10:13:16.439 +03:00 [DBG] Key ring with default key {bb7a52e4-5373-41a8-abc0-b40b57f7e4ca} was loaded during application startup.
+2026-06-21 10:13:16.548 +03:00 [DBG] Middleware configuration started with options: {AllowedHosts = *, AllowEmptyHosts = True, IncludeFailureMessage = True}
+2026-06-21 10:13:16.556 +03:00 [DBG] Wildcard detected, all requests with hosts will be allowed.
+2026-06-21 10:13:16.619 +03:00 [INF] Now listening on: http://localhost:7001
+2026-06-21 10:13:16.624 +03:00 [DBG] Loaded hosting startup assembly server
+2026-06-21 10:13:16.634 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-21 10:13:16.638 +03:00 [INF] Hosting environment: Development
+2026-06-21 10:13:16.640 +03:00 [INF] Content root path: C:\Users\rivka\3D Objects\LearnBudget\server
+2026-06-21 10:13:16.642 +03:00 [DBG] Hosting started
+2026-06-21 10:43:45.302 +03:00 [INF] Application is shutting down...
+2026-06-21 10:43:45.304 +03:00 [DBG] Hosting stopping
+2026-06-21 10:43:45.316 +03:00 [DBG] Hosting stopped

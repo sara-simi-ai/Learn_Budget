@@ -62,8 +62,8 @@ namespace server.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("LecturerId")
-                        .HasColumnType("int");
+                    b.Property<string>("LecturerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LecturerName")
                         .IsRequired()
@@ -77,6 +77,9 @@ namespace server.Migrations
 
                     b.Property<string>("MeetingLink")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("CourseId");
 
@@ -101,6 +104,9 @@ namespace server.Migrations
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -150,15 +156,13 @@ namespace server.Migrations
 
             modelBuilder.Entity("server.Models.Lecturer", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("Cost")
                         .HasColumnType("decimal(18,2)");
@@ -169,15 +173,17 @@ namespace server.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Lecturer");
+                    b.ToTable("Lecturers");
                 });
 
             modelBuilder.Entity("server.Models.User", b =>
@@ -194,9 +200,6 @@ namespace server.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -210,6 +213,9 @@ namespace server.Migrations
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
